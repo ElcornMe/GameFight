@@ -42,6 +42,30 @@ export async function fight(firstFighter, secondFighter) {
   });
 }
 
+function processFightAction(firstFighter, secondFighter, keyMap, currentCode) {
+  if (currentCode === controls.PlayerOneBlock) {
+    firstFighter.setIsBlocking(true);
+  }
+  if (currentCode === controls.PlayerTwoBlock) {
+    secondFighter.setIsBlocking(true);
+  }
+  if (currentCode === controls.PlayerOneAttack) {
+    applyFighterAttack(firstFighter, secondFighter, keyMap);
+    return;
+  }
+  if (currentCode === controls.PlayerTwoAttack) {
+    applyFighterAttack(secondFighter, firstFighter, keyMap);
+    return;
+  }
+  if (controls.PlayerOneCriticalHitCombination.every(code => keyMap.has(code))) {
+    firstFighter.doCritAttack(secondFighter);
+    return;
+  }
+  if (controls.PlayerTwoCriticalHitCombination.every(code => keyMap.has(code))) {
+    secondFighter.doCritAttack(firstFighter);
+  }
+}
+
 export function getDamage(attacker, defender) {
   if(getBlockPower(defender) > getHitPower(attacker)) {
     return 0
